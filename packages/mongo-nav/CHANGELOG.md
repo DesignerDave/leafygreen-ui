@@ -1,5 +1,63 @@
 # @leafygreen-ui/mongo-nav
 
+## 5.2.2
+
+### Patch Changes
+
+- 160bcba5: Removes "role='none'" from product tabs in ProjectNav and adds an accessible name to the Org Home link
+- df1bd222: Marks decorative icons across component with `role='presentation'` so that they are hidden from screen readers.
+- Updated dependencies [c8aee7eb]
+  - @leafygreen-ui/palette@3.1.1
+
+## 5.2.1
+
+### Patch Changes
+
+- 6058739f: Updates University icon in MongoNav
+
+## 5.2.0
+
+### Minor Changes
+
+- f8669b33: - Adds `'devHub'` and `'forums'` as options for `activePlatform` prop
+  - Adds DevHub and Forums to UserMenu
+  - Adds the following as possible options for NavElement, and passes onElementClick handler to the respective elements: `'userMenuDevHub'`, `'userMenuForums'`, `'userMenuLogout'`. `'userMenuSupport'`, `'userMenuUniversity'`
+
+### Patch Changes
+
+- Updated dependencies [7cd81360]
+- Updated dependencies [04cbe342]
+- Updated dependencies [55e3789c]
+  - @leafygreen-ui/tooltip@6.1.5
+
+## 5.1.3
+
+### Patch Changes
+
+- Updated dependencies [f805b772]
+- Updated dependencies [f805b772]
+  - @leafygreen-ui/icon@9.0.0
+  - @leafygreen-ui/typography@7.3.2
+  - @leafygreen-ui/tooltip@6.1.4
+
+## 5.1.2
+
+### Patch Changes
+
+- b5d1edde: Adds expand/collapse states to buttons across component
+- Updated dependencies [bf8b83e1]
+  - @leafygreen-ui/icon@8.0.1
+
+## 5.1.1
+
+### Patch Changes
+
+- Updated dependencies [ba56b1cc]
+- Updated dependencies [2cb0d077]
+  - @leafygreen-ui/icon@8.0.0
+  - @leafygreen-ui/tooltip@6.1.3
+  - @leafygreen-ui/typography@7.3.1
+
 ## 5.1.0
 
 ### Minor Changes

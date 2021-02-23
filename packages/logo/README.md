@@ -29,50 +29,52 @@ import {
   CloudManagerLogo,
 } from '@leafygreen-ui/logo';
 
-<Logo />;
+return <Logo />;
 ```
 
 **Output HTML**
 
 ```html
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 1112.61 300"
-  height="40"
-  width="100%"
->
-  <title>MongoDB Logo</title>
-  <path class="leafygreen-ui-17842x1"></path>
-  <path class="leafygreen-ui-197s9ut"></path>
-  <path class="leafygreen-ui-1wkd47u"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-  <path fill="#21313C"></path>
-</svg>
+<div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1112.61 300"
+    height="40"
+    width="100%"
+  >
+    <title>MongoDB Logo</title>
+    <path class="leafygreen-ui-17842x1"></path>
+    <path class="leafygreen-ui-197s9ut"></path>
+    <path class="leafygreen-ui-1wkd47u"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+    <path fill="#21313C"></path>
+  </svg>
+</div>
 ```
 
 ## Properties
 
-| Prop       | Type                  | Description                                                             | Default  |
-| ---------- | --------------------- | ----------------------------------------------------------------------- | -------- |
-| `height`   | `number`              | Height of the `<Logo />` component                                      | `40`     |
-| `knockout` | `boolean`             | Determines whether or not a `knockout` version of the Logo will be used | `false`  |
-| `variant`  | `'light'` \| `'dark'` | Determines if `<Logo />` will be white or dark gray                     | `'dark'` |
+| Prop       | Type                | Description                                                             | Default  |
+| ---------- | ------------------- | ----------------------------------------------------------------------- | -------- |
+| `height`   | `number`            | Height of the `<Logo />` component                                      | `40`     |
+| `knockout` | `boolean`           | Determines whether or not a `knockout` version of the Logo will be used | `false`  |
+| `variant`  | `'light'`, `'dark'` | Determines if `<Logo />` will be white or dark gray                     | `'dark'` |
 
 # LogoMark
 
 ## Properties
 
-| Prop       | Type                  | Description                                                                                                                         | Default |
-| ---------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `height`   | `number`              | Height of the `<Logo />` component                                                                                                  | `40`    |
-| `knockout` | `boolean`             | Determines whether or not a `knockout` version of the Logo will be used.                                                            | `false` |
-| `variant`  | `'light'` \| `'dark'` | Determines if `<Logo />` will be white or dark gray. Do not pass a value to this prop, if you wish to render a full-color logomark. |         |
+| Prop       | Type                | Description                                                                                                                         | Default |
+| ---------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `height`   | `number`            | Height of the `<Logo />` component                                                                                                  | `40`    |
+| `knockout` | `boolean`           | Determines whether or not a `knockout` version of the Logo will be used.                                                            | `false` |
+| `variant`  | `'light'`, `'dark'` | Determines if `<Logo />` will be white or dark gray. Do not pass a value to this prop, if you wish to render a full-color logomark. |         |
 
 # Product Logos
 

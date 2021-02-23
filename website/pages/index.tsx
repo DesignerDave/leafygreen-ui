@@ -1,19 +1,18 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { css, cx } from 'emotion';
-import facepaint from 'facepaint';
 import { Overline } from '@leafygreen-ui/typography';
 import { uiColors } from '@leafygreen-ui/palette';
 import { useViewportSize } from '@leafygreen-ui/hooks';
 import { spacing, breakpoints } from '@leafygreen-ui/tokens';
 import { GridContainer, GridItem } from 'components/Grid';
 import { getAllUpdates, UpdateProps } from 'utils/fetchUpdates';
+import { mq } from 'utils/mediaQuery';
+import { CDN } from 'utils/routes';
+import { pageContainerWidth } from 'styles/constants';
 import News from 'components/News';
 
-const mq = facepaint(
-  Object.values(breakpoints).map(bp => `@media (min-width: ${bp}px)`),
-  { literal: true },
-);
+const landingURL = `${CDN}/images/landing`;
 
 const backdrop = css`
   background-color: ${uiColors.gray.light3};
@@ -26,10 +25,17 @@ const backdrop = css`
 `;
 
 const layoutProperties = css`
+  margin-right: 0;
+
   ${mq({
-    width: ['calc(100% + 48px)', '100%', '100%', '1077px'],
-    paddingRight: [0, `${spacing[4]}px`, `${spacing[4]}px`, `${spacing[4]}px`],
-    marginLeft: ['-24px', 'unset', 'unset', 'unset'],
+    width: [
+      'calc(100% + 48px)',
+      '100%',
+      '100%',
+      `${pageContainerWidth.dataGraphic}px`,
+    ],
+    paddingRight: [0, `${spacing[4]}px`, `${spacing[4]}px`, 0],
+    marginLeft: [`-${spacing[4]}px`, '0px', '0px', '0px'],
   })}
 `;
 
@@ -64,11 +70,11 @@ const previewWrapper = css`
   ${container}
   overflow: hidden;
   transition: transform 300ms ease-in-out;
-  ${sharedHoverInteraction}
 
   &:hover {
     & > div {
       opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
     }
   }
 `;
@@ -79,10 +85,15 @@ const overlineContainer = css`
   left: 0;
   padding-left: ${spacing[3]}px;
   padding-bottom: ${spacing[3]}px;
-  transition: opacity 300ms ease-in-out;
+  transition: all 300ms ease-in-out;
 
   ${mq({
-    opacity: [1, 1, 0, 0],
+    opacity: [1, 1, 0],
+    transform: [
+      'none',
+      'none',
+      `translate3d(0, ${spacing[3]}px, 0) scale(0.95)`,
+    ],
   })}
 `;
 
@@ -97,7 +108,6 @@ const marketingWrapper = css`
   overflow: hidden;
   position: relative;
   transition: transform 300ms ease-in-out;
-  ${sharedHoverInteraction}
 `;
 
 const textWrapper = css`
@@ -105,26 +115,33 @@ const textWrapper = css`
   top: 0;
   bottom: 0;
   left: 0;
-  font-weight: medium;
-  padding-top: ${spacing[4]}px;
-  padding-left: ${spacing[4]}px;
+  font-weight: 600;
   text-align: left;
   overflow: hidden;
 
   ${mq({
+    paddingTop: [`${spacing[3]}px`, `${spacing[4]}px`],
+    paddingLeft: [`${spacing[3]}px`, `${spacing[4]}px`],
+    paddingRight: [`${spacing[3]}px`, `${spacing[4]}px`],
     fontSize: ['24px', '60px', '60px', '60px'],
+  })}
+`;
+
+const newsContainer = css`
+  ${mq({
+    height: ['unset', '350px'],
   })}
 `;
 
 const largeHeight = css`
   ${mq({
-    height: ['50vw', '350px', '350px', '350px'],
+    height: ['50vw', '350px'],
   })}
 `;
 
 const smallHeight = css`
   ${mq({
-    height: ['50vw', '175px', '175px', '175px'],
+    height: ['50vw', '175px'],
   })}
 `;
 
@@ -143,6 +160,7 @@ interface ComponentPreviewProps {
   content?: string;
   children?: string;
   className?: string;
+  isTouchDevice?: boolean;
 }
 
 function ComponentPreview({
@@ -150,11 +168,18 @@ function ComponentPreview({
   backgroundURL,
   content,
   className,
+  isTouchDevice = false,
 }: ComponentPreviewProps) {
   const { push } = useRouter();
+
   return (
-    <div className={className}>
-      <button className={previewWrapper} onClick={() => push(route)}>
+    <div className={cx(className, boxShadow)}>
+      <button
+        className={cx(previewWrapper, {
+          [sharedHoverInteraction]: !isTouchDevice,
+        })}
+        onClick={() => push(route)}
+      >
         <img
           src={backgroundURL}
           alt={`Learn more about ${content} component`}
@@ -169,17 +194,18 @@ function ComponentPreview({
     </div>
   );
 }
-
 interface MarketingPreview {
   marketingURL: string;
   children: string;
   backgroundURL: string;
+  isTouchDevice?: boolean;
 }
 
 function MarketingPreview({
   marketingURL,
   children,
   backgroundURL,
+  isTouchDevice,
 }: MarketingPreview) {
   return (
     <div className={largeHeight}>
@@ -189,7 +215,11 @@ function MarketingPreview({
         target="_blank"
         rel="noopener noreferrer"
       >
-        <div className={marketingWrapper}>
+        <div
+          className={cx(marketingWrapper, {
+            [sharedHoverInteraction]: !isTouchDevice,
+          })}
+        >
           <img
             src={backgroundURL}
             alt=""
@@ -212,6 +242,11 @@ export default function Home({ updates }: { updates: Array<UpdateProps> }) {
     ? viewport?.width < breakpoints.Tablet
     : false;
 
+  const sharedSmallComponentPreviewProps = {
+    isTouchDevice,
+    className: smallHeight,
+  };
+
   return (
     <>
       <div className={backdrop} />
@@ -224,16 +259,17 @@ export default function Home({ updates }: { updates: Array<UpdateProps> }) {
       >
         {/* First Row */}
         <GridItem sm={12} md={6} lg={6}>
-          <div className={largeHeight}>
+          <div className={newsContainer}>
             <News updates={updates} />
           </div>
         </GridItem>
         <GridItem sm={6} md={6} lg={6}>
           <ComponentPreview
             route="/component/banner/example"
-            backgroundURL="/images/banner-thumbnail.png"
+            backgroundURL={`${landingURL}/banner-thumbnail.png`}
             content="Banner"
             className={largeHeight}
+            isTouchDevice={isTouchDevice}
           />
         </GridItem>
 
@@ -241,9 +277,12 @@ export default function Home({ updates }: { updates: Array<UpdateProps> }) {
         {isTouchDevice && (
           <GridItem sm={6} md={6} lg={6}>
             <div className={largeHeight}>
-              {/* @ts-expect-error, awaiting URL for marketing page */}
-              <MarketingPreview backgroundURL="/images/personas-thumbnail.png">
-                Meet our Personas
+              <MarketingPreview
+                marketingURL="https://www.mongodb.com/blog/post/meet-our-product-design-team-part-1"
+                backgroundURL={`${landingURL}/team-thumbnail.png`}
+                isTouchDevice={isTouchDevice}
+              >
+                Meet our Team
               </MarketingPreview>
             </div>
           </GridItem>
@@ -252,35 +291,41 @@ export default function Home({ updates }: { updates: Array<UpdateProps> }) {
           <div className={secondRowContainer}>
             <ComponentPreview
               route="/component/radio-box-group/example"
-              backgroundURL="/images/radioBox-thumbnail.png"
+              backgroundURL={`${landingURL}/radioBox-thumbnail.png`}
               content="Radio boxes"
-              className={cx(smallHeight, halfWidth, boxShadow)}
+              className={cx(smallHeight, halfWidth)}
+              isTouchDevice={isTouchDevice}
             />
             <ComponentPreview
               route="/component/text-input/example"
-              backgroundURL="/images/textInput-thumbnail.png"
+              backgroundURL={`${landingURL}/textInput-thumbnail.png`}
               content="Text input"
-              className={cx(smallHeight, halfWidth, boxShadow)}
+              className={cx(smallHeight, halfWidth)}
+              isTouchDevice={isTouchDevice}
             />
             <ComponentPreview
               route="/component/logo/example"
-              backgroundURL="/images/logos-thumbnail.png"
+              backgroundURL={`${landingURL}/logos-thumbnail.png`}
               content="Logos"
               className={cx(smallHeight, halfWidth)}
+              isTouchDevice={isTouchDevice}
             />
             <ComponentPreview
               route="/component/tokens/example"
-              backgroundURL="/images/spacers-thumbnail.png"
+              backgroundURL={`${landingURL}/spacers-thumbnail.png`}
               content="Tokens"
               className={cx(smallHeight, halfWidth)}
+              isTouchDevice={isTouchDevice}
             />
           </div>
         </GridItem>
         {!isTouchDevice && (
           <GridItem sm={6} md={6} lg={6}>
-            {/* @ts-expect-error, awaiting URL for marketing page */}
-            <MarketingPreview backgroundURL="/images/personas-thumbnail.png">
-              Meet our Personas
+            <MarketingPreview
+              marketingURL="https://www.mongodb.com/blog/post/meet-our-product-design-team-part-1"
+              backgroundURL={`${landingURL}/team-thumbnail.png`}
+            >
+              Meet our Team
             </MarketingPreview>
           </GridItem>
         )}
@@ -288,45 +333,223 @@ export default function Home({ updates }: { updates: Array<UpdateProps> }) {
         {/* Third Row */}
         <GridItem sm={6} md={3} lg={3}>
           <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
             route="/component/icon/example"
-            backgroundURL="/images/icons-thumbnail.png"
+            backgroundURL={`${landingURL}/icons-thumbnail.png`}
             content="Icons"
-            className={smallHeight}
           />
         </GridItem>
         <GridItem sm={6} md={3} lg={3}>
           <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
             route="/component/card/example"
-            backgroundURL="/images/card-thumbnail.png"
+            backgroundURL={`${landingURL}/card-thumbnail.png`}
             content="Card"
-            className={smallHeight}
           />
         </GridItem>
         <GridItem sm={6} md={3} lg={3}>
           <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
             route="/component/tooltip/example"
-            backgroundURL="/images/tooltip-thumbnail.png"
+            backgroundURL={`${landingURL}/tooltip-thumbnail.png`}
             content="Tooltip"
-            className={smallHeight}
           />
         </GridItem>
         <GridItem sm={6} md={3} lg={3}>
           <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
             route="/component/checkbox/example"
-            backgroundURL="/images/checkbox-thumbnail.png"
+            backgroundURL={`${landingURL}/checkbox-thumbnail.png`}
             content="Checkbox"
-            className={smallHeight}
           />
         </GridItem>
 
         {/* Fourth Row */}
-        <GridItem sm={6} md={6} lg={6}>
-          <MarketingPreview
-            marketingURL="https://www.mongodb.com/blog/post/meet-our-product-design-team-part-1"
-            backgroundURL="/images/team-thumbnail.png"
-          >
-            Meet our Team
-          </MarketingPreview>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/badge/example"
+            backgroundURL={`${landingURL}/badges-thumb.png`}
+            content="Badge"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/callout/example"
+            backgroundURL={`${landingURL}/callout-thumb.png`}
+            content="Callout"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/inline-definition/example"
+            backgroundURL={`${landingURL}/inlinedefinition-thumb.png`}
+            content="Inline Definition"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/button/example"
+            backgroundURL={`${landingURL}/button-thumb.png`}
+            content="Button"
+          />
+        </GridItem>
+
+        {/* Fifth Row */}
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/toast/example"
+            backgroundURL={`${landingURL}/toast-thumb.png`}
+            content="Toast"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/icon-button/example"
+            backgroundURL={`${landingURL}/iconbutton-thumb.png`}
+            content="Icon Button"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/menu/example"
+            backgroundURL={`${landingURL}/menu-thumb.png`}
+            content="Menu"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/text-area/example"
+            backgroundURL={`${landingURL}/textarea-thumb.png`}
+            content="Text Area"
+          />
+        </GridItem>
+
+        {/* Sixth Row */}
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/copyable/example"
+            backgroundURL={`${landingURL}/copyable-thumb.png`}
+            content="Copyable"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/tabs/example"
+            backgroundURL={`${landingURL}/tabs-thumb.png`}
+            content="Tabs"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/marketing-modal/example"
+            backgroundURL={`${landingURL}/marketingmodal-thumb.png`}
+            content="Marketing Modal"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/typography/example"
+            backgroundURL={`${landingURL}/typography-thumb.png`}
+            content="Typography"
+          />
+        </GridItem>
+
+        {/* Seventh Row */}
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/code/example"
+            backgroundURL={`${landingURL}/code-thumb.png`}
+            content="Code"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/toggle/example"
+            backgroundURL={`${landingURL}/toggles-thumb.png`}
+            content="Toggle"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/table/example"
+            backgroundURL={`${landingURL}/table-thumb.png`}
+            content="Table"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/confirmation-modal/example"
+            backgroundURL={`${landingURL}/confirmationmodal-thumb.png`}
+            content="Confirmation Modal"
+          />
+        </GridItem>
+
+        {/* Eighth Row */}
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/modal/example"
+            backgroundURL={`${landingURL}/modal-thumb.png`}
+            content="Modal"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/stepper/example"
+            backgroundURL={`${landingURL}/stepper-thumb.png`}
+            content="Stepper"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/palette/example"
+            backgroundURL={`${landingURL}/palette-thumb.png`}
+            content="Palette"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/side-nav/example"
+            backgroundURL={`${landingURL}/sidenav-thumb.png`}
+            content="Side Nav"
+          />
+        </GridItem>
+
+        {/* Ninth Row */}
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/radio-group/example"
+            backgroundURL={`${landingURL}/radiogroup-thumb.png`}
+            content="Radio Group"
+          />
+        </GridItem>
+        <GridItem sm={6} md={3} lg={3}>
+          <ComponentPreview
+            {...sharedSmallComponentPreviewProps}
+            route="/component/select/example"
+            backgroundURL={`${landingURL}/select-thumb.png`}
+            content="Select"
+          />
         </GridItem>
       </GridContainer>
     </>

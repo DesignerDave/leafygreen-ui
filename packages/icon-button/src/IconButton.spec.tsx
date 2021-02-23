@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import IconButton from './IconButton';
 import EllipsisIcon from '@leafygreen-ui/icon/dist/Ellipsis';
 
@@ -22,6 +23,13 @@ function renderIconButton(props = {}) {
 }
 
 describe('packages/icon-button', () => {
+  describe('a11y', () => {
+    test('does not have basic accessibility issues', async () => {
+      const { container } = renderIconButton({ children: iconChild });
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+  });
   test(`renders ${className} in the classList`, () => {
     const { iconButton } = renderIconButton({ className, children: iconChild });
     expect(iconButton.classList.contains(className)).toBe(true);
@@ -43,11 +51,6 @@ describe('packages/icon-button', () => {
     expect(iconButton.contains(icon)).toBe(true);
   });
 
-  test("the rendered icon doesn't include a title tag", () => {
-    const { icon } = renderIconButton({ children: iconChild });
-    expect(icon.getElementsByTagName('title').length === 0).toBeTruthy();
-  });
-
   test('renders inside an anchor tag when the href prop is set', () => {
     const { iconButton } = renderIconButton({
       href: 'http://mongodb.design',
@@ -56,12 +59,12 @@ describe('packages/icon-button', () => {
     expect(iconButton.tagName.toLowerCase()).toBe('a');
   });
 
-  test(`when '${titleText}' is set directly as the title child icon, the rendered icon includes a title tag with the text content, '${titleText}'`, () => {
+  test(`when '${titleText}' is set directly as the title child icon, the rendered icon includes the title attribute, '${titleText}'`, () => {
     const iconWithTitle = (
       <EllipsisIcon data-testid="icon-test-id" title={titleText} />
     );
     const { icon } = renderIconButton({ children: iconWithTitle });
 
-    expect(icon.getElementsByTagName('title')[0].textContent).toBe(titleText);
+    expect(icon.getAttribute('title')).toBe(titleText);
   });
 });

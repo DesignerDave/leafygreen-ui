@@ -1,5 +1,30 @@
 # @leafygreen-ui/modal
 
+## 6.0.0
+
+### Major Changes
+
+- fd9b1102: Traps focus in Modal component
+
+### Patch Changes
+
+- Updated dependencies [c8aee7eb]
+  - @leafygreen-ui/palette@3.1.1
+
+## 5.1.2
+
+### Patch Changes
+
+- Updated dependencies [f805b772]
+  - @leafygreen-ui/icon@9.0.0
+
+## 5.1.1
+
+### Patch Changes
+
+- Updated dependencies [ba56b1cc]
+  - @leafygreen-ui/icon@8.0.0
+
 ## 5.1.0
 
 ### Minor Changes

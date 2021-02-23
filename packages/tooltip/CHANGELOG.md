@@ -1,5 +1,36 @@
 # @leafygreen-ui/tooltip
 
+## 6.1.5
+
+### Patch Changes
+
+- 7cd81360: The tooltip notch no longer intercepts pointer events
+- 04cbe342: Fixes several issues where Tooltips were not visually consistent with the Figma component.
+- 55e3789c: Fixes the issue where the `aria-describedby` attribute was being set on the Tooltip trigger when the Tooltip is not visible.
+
+## 6.1.4
+
+### Patch Changes
+
+- Updated dependencies [f805b772]
+  - @leafygreen-ui/icon@9.0.0
+
+## 6.1.3
+
+### Patch Changes
+
+- 2cb0d077: Fixes an issue with the Tooltip package by making the Icon package an explicit requirement
+- Updated dependencies [ba56b1cc]
+  - @leafygreen-ui/icon@8.0.0
+
+## 6.1.2
+
+### Patch Changes
+
+- 2daf1808: Warns developer not to use a LeafyGreen UI Icon or Glyph component as a trigger, and instead suggests wrapping one of those components in another HTML tag so that the Tooltip can render properly.
+- Updated dependencies [a6360ea1]
+  - @leafygreen-ui/popover@7.1.1
+
 ## 6.1.1
 
 ### Patch Changes

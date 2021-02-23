@@ -120,6 +120,7 @@ const UserMenuTrigger = React.forwardRef<HTMLDivElement, UserMenuTriggerProps>(
           <button
             {...rest}
             {...buttonDataProp.prop}
+            aria-expanded={open}
             ref={buttonRef}
             className={cx(baseButtonStyles, {
               [openBaseButtonStyle]: open,
@@ -140,10 +141,15 @@ const UserMenuTrigger = React.forwardRef<HTMLDivElement, UserMenuTriggerProps>(
             </span>
 
             {open ? (
-              <CaretUpIcon {...iconDataProp.prop} className={openIconStyle} />
+              <CaretUpIcon
+                {...iconDataProp.prop}
+                role="presentation"
+                className={openIconStyle}
+              />
             ) : (
               <CaretDownIcon
                 {...iconDataProp.prop}
+                role="presentation"
                 className={closedIconStyle}
               />
             )}

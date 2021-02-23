@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import Toast, { ToastProps, Variant } from './Toast';
 
 function renderToast(props: ToastProps) {
@@ -7,6 +8,18 @@ function renderToast(props: ToastProps) {
 }
 
 describe('packages/toast', () => {
+  describe('a11y', () => {
+    test('does not have basic accessibility issues', async () => {
+      const { container } = renderToast({
+        open: true,
+        body: 'hello world',
+        variant: Variant.Success,
+      });
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+  });
+
   describe(`when 'open' prop is`, () => {
     test(`undefined, Toast doesn't render`, () => {
       const { queryByRole } = renderToast({
@@ -15,7 +28,8 @@ describe('packages/toast', () => {
       });
 
       const toast = queryByRole('status');
-      expect(toast).not.toBeInTheDocument();
+      expect(toast).toBeVisible();
+      expect(toast).toBeEmptyDOMElement();
     });
 
     test(`false, Toast doesn't render`, () => {
@@ -26,7 +40,8 @@ describe('packages/toast', () => {
       });
 
       const toast = queryByRole('status');
-      expect(toast).not.toBeInTheDocument();
+      expect(toast).toBeVisible();
+      expect(toast).toBeEmptyDOMElement();
     });
 
     test('true, Toast is visible', () => {
@@ -38,6 +53,7 @@ describe('packages/toast', () => {
 
       const toast = queryByRole('status');
       expect(toast).toBeVisible();
+      expect(toast).not.toBeEmptyDOMElement();
     });
   });
 
@@ -162,15 +178,13 @@ describe('packages/toast', () => {
     test.each(Object.values(Variant) as Array<Variant>)(
       `when 'variant' is '%s'`,
       variant => {
-        const { getByTitle } = renderToast({
+        const { getByLabelText } = renderToast({
           open: true,
           body: 'hello world',
           variant,
         });
 
-        expect(
-          getByTitle(expectedVariantIcons[variant]).closest('svg'),
-        ).toBeVisible();
+        expect(getByLabelText(expectedVariantIcons[variant])).toBeVisible();
       },
     );
   });

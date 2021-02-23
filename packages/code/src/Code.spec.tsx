@@ -1,15 +1,16 @@
-import ClipboardJS from 'clipboard';
 import React from 'react';
+import ClipboardJS from 'clipboard';
+import { axe } from 'jest-axe';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { typeIs } from '@leafygreen-ui/lib';
 import { Context, jest as Jest } from '@leafygreen-ui/testing-lib';
-import Code from './Code';
+import Code, { hasMultipleLines } from './Code';
 
 const codeSnippet = 'const greeting = "Hello, world!";';
 const className = 'test-class';
 const onCopy = jest.fn();
 
-describe('packages/Syntax', () => {
+describe('packages/Code', () => {
   const { container } = Context.within(
     Jest.spyContext(ClipboardJS, 'isSupported'),
     spy => {
@@ -22,6 +23,13 @@ describe('packages/Syntax', () => {
       );
     },
   );
+
+  describe('a11y', () => {
+    test('does not have basic accessibility violations', async () => {
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+  });
 
   const codeContainer = (container.firstChild as HTMLElement).lastChild;
   const codeRoot = (codeContainer as HTMLElement).firstChild;
@@ -58,6 +66,28 @@ describe('packages/Syntax', () => {
       const copyIcon = screen.getByRole('button');
       fireEvent.click(copyIcon);
       expect(onCopy).toBeCalledTimes(1);
+    });
+  });
+
+  describe('hasMultipleLines()', () => {
+    test('when passed a single line without preceding and subsequent line breaks, returns "false"', () => {
+      const codeExample = `Example`;
+      expect(hasMultipleLines(codeExample)).toBeFalsy();
+    });
+
+    test('when passed a single line with preceding and subsequent line breaks, returns "false"', () => {
+      const codeExample = `\nExample\n`;
+      expect(hasMultipleLines(codeExample)).toBeFalsy();
+    });
+
+    test('when passed a multiple lines without preceding and subsequent line breaks, returns "true"', () => {
+      const codeExample = `Example\nstring`;
+      expect(hasMultipleLines(codeExample)).toBeTruthy();
+    });
+
+    test('when passed multiple lines with preceding and subsequent line breaks, returns "true"', () => {
+      const codeExample = `\nExample\nstring\n`;
+      expect(hasMultipleLines(codeExample)).toBeTruthy();
     });
   });
 });

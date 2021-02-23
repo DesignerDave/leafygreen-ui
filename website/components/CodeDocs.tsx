@@ -14,6 +14,7 @@ import { uiColors } from '@leafygreen-ui/palette';
 import { spacing, breakpoints } from '@leafygreen-ui/tokens';
 import { useViewportSize } from '@leafygreen-ui/hooks';
 import { BaseLayoutProps } from 'utils/types';
+import { pageContainerWidth } from 'styles/constants';
 import { GridContainer, GridItem } from 'components/Grid';
 import PropTable, { ReadmeMarkdown } from 'components/PropTable';
 import TypeDefinition from 'components/TypeDefinition';
@@ -36,6 +37,11 @@ const mb1 = css`
   margin-bottom: ${spacing[1]}px;
 `;
 
+const copyableStyles = css`
+  width: 100%;
+  max-width: 400px;
+`;
+
 const versionCard = css`
   min-height: 106px;
   padding: ${spacing[3]}px ${spacing[4]}px;
@@ -51,6 +57,7 @@ const tabsPadding = css`
 
 const mobileInstallMargin = css`
   margin-top: 50px;
+  margin-bottom: ${spacing[3]}px;
 `;
 
 const changelogStyles = css`
@@ -68,6 +75,9 @@ const changelogStyles = css`
   }
 `;
 
+const maxWidth = css`
+  max-width: ${pageContainerWidth.default}px;
+`;
 interface VersionCardProps {
   version?: string;
   changelog: string;
@@ -89,7 +99,6 @@ function VersionCard({
 
   return (
     <Card className={cx(topAlignment, versionCard)}>
-      {/* TODO: Provide fallback if no version */}
       <Subtitle as="h2" className={subtitlePadding}>
         Version {version}
       </Subtitle>
@@ -115,6 +124,8 @@ function VersionCard({
   );
 }
 
+VersionCard.displayName = 'VersionCard';
+
 function MobileInstall({ component, version, changelog }: InstallProps) {
   return (
     <GridContainer>
@@ -124,11 +135,15 @@ function MobileInstall({ component, version, changelog }: InstallProps) {
           <Body weight="medium" className={mt3}>
             Yarn
           </Body>
-          <Copyable>{`yarn add @leafygreen-ui/${component}`}</Copyable>
+          <Copyable
+            className={copyableStyles}
+          >{`yarn add @leafygreen-ui/${component}`}</Copyable>
           <Body weight="medium" className={mt3}>
             NPM
           </Body>
-          <Copyable>{`npm install @leafygreen-ui/${component}`}</Copyable>
+          <Copyable
+            className={copyableStyles}
+          >{`npm install @leafygreen-ui/${component}`}</Copyable>
         </div>
       </GridItem>
       <GridItem sm={12}>
@@ -140,10 +155,16 @@ function MobileInstall({ component, version, changelog }: InstallProps) {
   );
 }
 
+MobileInstall.displayName = 'MobileInstall';
+
 function DesktopInstall({ component, changelog, version }: InstallProps) {
   return (
     <>
-      <GridContainer justify="space-between" align="flex-start">
+      <GridContainer
+        justify="space-between"
+        align="flex-start"
+        className={maxWidth}
+      >
         <GridItem md={7} lg={7}>
           <div className={topAlignment}>
             <Subtitle
@@ -178,6 +199,8 @@ function DesktopInstall({ component, changelog, version }: InstallProps) {
   );
 }
 
+DesktopInstall.displayName = 'DesktopInstall';
+
 function CodeDocs({ component, readme, changelog }: BaseLayoutProps) {
   const viewport = useViewportSize();
   const isMobile = viewport?.width
@@ -186,7 +209,7 @@ function CodeDocs({ component, readme, changelog }: BaseLayoutProps) {
 
   const version = changelog?.split('h2')[1]?.replace(/[>/<]+/g, '');
   const example = readme?.split('js')[1]?.split('```')[0]?.trimStart();
-  const outputHTML = readme?.split('html')[1]?.split('```')[0]?.trimStart();
+  const outputHTML = readme?.split('```html')[1]?.split('```')[0]?.trimStart();
   const markdownAst = (unified()
     .use(markdown)
     .parse(readme) as unknown) as ReadmeMarkdown;
@@ -206,9 +229,16 @@ function CodeDocs({ component, readme, changelog }: BaseLayoutProps) {
           changelog={changelog}
         />
       )}
-      <GridContainer align="flex-start" justify="flex-start">
+      <GridContainer
+        align="flex-start"
+        justify="flex-start"
+        className={maxWidth}
+      >
         <GridItem sm={12} md={12} xl={12}>
-          <Tabs className={tabsPadding}>
+          <Tabs
+            className={tabsPadding}
+            aria-label={`View source code for ${component} component`}
+          >
             {example && (
               <Tab default name="Example" className={mt3}>
                 <Code showLineNumbers language="js">
@@ -236,5 +266,7 @@ function CodeDocs({ component, readme, changelog }: BaseLayoutProps) {
     </>
   );
 }
+
+CodeDocs.displayName = 'CodeDocs';
 
 export default CodeDocs;

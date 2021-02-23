@@ -1,12 +1,6 @@
 import React, { useMemo } from 'react';
-import { css } from 'emotion';
-import facepaint from 'facepaint';
-import { breakpoints } from '@leafygreen-ui/tokens';
-
-const mq = facepaint(
-  Object.values(breakpoints).map(bp => `@media (min-width: ${bp}px)`),
-  { literal: true },
-);
+import { css, cx } from 'emotion';
+import { mq } from 'utils/mediaQuery';
 
 const Direction = {
   Row: 'row',
@@ -55,21 +49,27 @@ function GridContainer({
   align = Align.Center,
   justify = Justify.Center,
   wrap = Wrap.Wrap,
+  className,
 }: GridContainerProps) {
   return (
     <div
-      className={css`
-        display: flex;
-        flex-direction: ${direction};
-        align-items: ${align};
-        justify-content: ${justify};
-        flex-wrap: ${wrap};
-      `}
+      className={cx(
+        css`
+          display: flex;
+          flex-direction: ${direction};
+          align-items: ${align};
+          justify-content: ${justify};
+          flex-wrap: ${wrap};
+        `,
+        className,
+      )}
     >
       {children}
     </div>
   );
 }
+
+GridContainer.displayName = 'GridContainer';
 
 export { GridContainer };
 
@@ -173,7 +173,7 @@ type GridItemProps = JSX.IntrinsicElements['div'] & {
   colStart?: number;
 };
 
-export function GridItem({
+function GridItem({
   sm: smProp,
   md: mdProp,
   lg: lgProp,
@@ -233,3 +233,7 @@ export function GridItem({
     </div>
   );
 }
+
+GridItem.displayName = 'Grid';
+
+export { GridItem };

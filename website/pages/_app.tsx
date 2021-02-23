@@ -7,6 +7,7 @@ import { Global } from '@emotion/core';
 import { globalStyles } from 'styles/globals';
 import BaseLayout from 'layouts/BaseLayout';
 import ComponentLayout from 'layouts/ComponentLayout';
+import metaTagKey from 'utils/metaTagKey';
 
 function DefaultLayout({ children }) {
   return children;
@@ -29,11 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <LeafyGreenProvider>
-      <Global styles={globalStyles} />
       <Head>
-        <html lang="en"></html>
-
-        <title>LeafyGreen - MongoDB Design System</title>
+        <title>Home – LeafyGreen Design System | MongoDB</title>
         <meta
           name="description"
           content="MongoDB's open-source, accessible design system for designing and building web applications with React."
@@ -46,6 +44,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta
           property="og:title"
           content="LeafyGreen - MongoDB Design System"
+          key={metaTagKey.Title}
         />
         <meta
           property="og:site_name"
@@ -55,6 +54,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta
           property="og:description"
           content="MongoDB's open-source, accessible design system for designing and building web applications with React."
+          key={metaTagKey.Description}
         />
 
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -65,7 +65,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <Global styles={globalStyles} />
       <BaseLayout>
         <SubLayout>
           <Component {...pageProps} />

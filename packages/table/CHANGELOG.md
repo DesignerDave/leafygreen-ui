@@ -1,5 +1,40 @@
 # @leafygreen-ui/table
 
+## 1.3.5
+
+### Patch Changes
+
+- b1bb95d8: Fixes issue where table body content wasn't being rendered server-side.
+- Updated dependencies [c8aee7eb]
+  - @leafygreen-ui/palette@3.1.1
+
+## 1.3.4
+
+### Patch Changes
+
+- Updated dependencies [f805b772]
+  - @leafygreen-ui/icon@9.0.0
+
+## 1.3.3
+
+### Patch Changes
+
+- 7ba9f4a8: Increases shadow when Table is scrollable
+
+## 1.3.2
+
+### Patch Changes
+
+- bf58e7d5: Improves default accessibility of Table component by adding the "scope" attribute to column header elements.
+- Updated dependencies [ba56b1cc]
+  - @leafygreen-ui/icon@8.0.0
+
+## 1.3.1
+
+### Patch Changes
+
+- 8ac6e396: Updates some of the attributes of internal elements to provide better accessibility to screen readers.
+
 ## 1.3.0
 
 ### Minor Changes

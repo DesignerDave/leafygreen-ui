@@ -3,13 +3,14 @@ import { css, cx } from '@leafygreen-ui/emotion';
 import { useViewportSize } from '@leafygreen-ui/hooks';
 import { keyMap } from '@leafygreen-ui/lib';
 import Popover, { Align, Justify } from '@leafygreen-ui/popover';
-import { breakpoints } from '@leafygreen-ui/tokens';
+import { breakpoints, fontFamilies } from '@leafygreen-ui/tokens';
 import SelectContext from './SelectContext';
 import { colorSets, mobileSizeSet, sizeSets } from './styleSets';
 import { useForwardedRef } from './utils';
 
 const menuStyle = css`
   position: relative;
+  text-align: left;
   width: 100%;
   border-radius: 3px;
   line-height: 16px;
@@ -28,6 +29,8 @@ interface ListMenuProps {
   onFocusPreviousOption: () => void;
   onFocusNextOption: () => void;
   className?: string;
+  usePortal?: boolean;
+  labelId?: string;
 }
 
 const ListMenu = React.forwardRef<HTMLUListElement, ListMenuProps>(
@@ -41,6 +44,8 @@ const ListMenu = React.forwardRef<HTMLUListElement, ListMenuProps>(
       onFocusNextOption,
       onSelectFocusedOption,
       className,
+      usePortal,
+      labelId,
     }: ListMenuProps,
     forwardedRef,
   ) {
@@ -120,8 +125,10 @@ const ListMenu = React.forwardRef<HTMLUListElement, ListMenuProps>(
         adjustOnMutation
         className={className}
         refEl={referenceElement}
+        usePortal={usePortal}
       >
         <ul
+          aria-labelledby={labelId}
           role="listbox"
           ref={ref}
           tabIndex={-1}
@@ -130,6 +137,7 @@ const ListMenu = React.forwardRef<HTMLUListElement, ListMenuProps>(
           className={cx(
             menuStyle,
             css`
+              font-family: ${fontFamilies.default};
               font-size: ${sizeSet.option.text}px;
               max-height: ${maxHeight}px;
               background-color: ${colorSet.option.background.base};
